@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 import './login.css'
 
@@ -38,7 +39,7 @@ export function Login() {
                     <input type="password" placeholder="contraseña" onChange ={e => setPassword(e.target.value)} required/>
                 </div>
                 <button>INGRESAR</button>
-                <p> Si no tienes cuenta  <a href="/Register">Ingressa Aqui</a></p>
+                <p> Si no tienes cuenta  <Link to="/Register">Ingressa Aqui</Link></p>
             </form>
             
         </main>
