@@ -1,20 +1,27 @@
 //1 - importamos modulo con require
 const express = require("express");
-const mysql = require("mysql");
 const cors = require("cors");
+const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
 
 //2 - configuracion
 const app = express();
 app.use(express.json());
 app.use(cors());
 
-//3 - conexion
-const conexion = mysql.createConnection({
-    host: "localhost",
-    database: "personas",
-    user: "root",
-    password: ""
+// Replace with your actual MongoDB connection string
+const MONGO_URL = "mongodb+srv://jalmpa77:Adso45**@adso45.to30h.mongodb.net/Usuarios?retryWrites=true&w=majority&appName=ADSO45";
+
+mongoose.connect(MONGO_URL)
+  .then(() => console.log('Conectado a MongoDB'))
+  .catch(err => console.error('Error al conectar a MongoDB:', err));
+
+const userSchema = new mongoose.Schema({
+  email: { type: String, required: true, unique: true, validate: { validator: (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/g.test(v), message: 'Please enter a valid email address' } },
+  password: { type: String, required: true },
 });
+
+const User = mongoose.model('User', userSchema);
 
 //4 - rutas Login 
 app.post('/login', (req, res) => {
@@ -33,31 +40,29 @@ app.post('/login', (req, res) => {
   });
 
  // ruta de register
- app.post('/register',(req,res)=>{
-  const{email,password}= req.body;
-  // verificacion de correo
-  const dbchek ="SELECT * FROM administradores WHERE email =?";
-  conexion.query(dbchek,[email],(err,data) =>{
-    if (data.length> 0){
-      return res.status(400).json({success:false,message:"el correo ya existe"})
-    } else{
-      // insertar datos a mi bases de datos 
-      const dbinsert="INSERT INTO administradores (email,password) VALUES (?,?)";
-      conexion.query(dbinsert,[email,password],(err,data)=>{
-        if (err) {
-          console.error(err)
-        }
-        return res.status(200).json({success:true,message:"usuario creado con exito"})
-      }
-    )
+ app.post('/register', async (req, res) => {
+  const { email, password } = req.body;
 
+  try {
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const user = new User({ email, password: hashedPassword });
+
+    const savedUser = await user.save(); // Add validation check here (optional)
+
+    res.status(201).json({ message: 'Usuario registrado correctamente' });
+  } catch (err) {
+    console.error('Error al registrar usuario:', err);
+
+    // Handle potential validation errors
+    if (err.name === 'ValidationError') {
+      return res.status(400).json({ message: err.message });
     }
-  }
-)
- }
-)
+    res.status(500).json({ message: 'Error interno del servidor' });
+  }});
 
 
+   
 
 //5 - poner a escuchar al servidor
 app.listen(8081,()=>{
