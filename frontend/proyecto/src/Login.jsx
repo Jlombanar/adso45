@@ -15,7 +15,7 @@ export function Login() {
     e.preventDefault();
 
     try {
-      const response = await axios.post('http://localhost:8081/login', { email, password });
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/login`, { email, password });
       if (response.data.message === 'BIENVENIDO A LA PLATAFORMA') {
         alert('bienvenido ')
         navigate('/Productos'); // Redirige a la página de productos
