@@ -9,7 +9,7 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-// Replace with your actual MongoDB connection string
+// conexion mongo atlas 
 const MONGO_URL = "mongodb+srv://jalmpa77:Adso45**@adso45.to30h.mongodb.net/Usuarios?retryWrites=true&w=majority&appName=ADSO45";
 
 mongoose.connect(MONGO_URL)
@@ -48,7 +48,7 @@ app.post('/login', (req, res) => {
 
     const user = new User({ email, password: hashedPassword });
 
-    const savedUser = await user.save(); // Add validation check here (optional)
+    const savedUser = await user.save(); 
 
     res.status(201).json({ message: 'Usuario registrado correctamente' });
   } catch (err) {
