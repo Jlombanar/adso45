@@ -17,7 +17,7 @@ mongoose.connect(MONGO_URL)
   .catch(err => console.error('Error al conectar a MongoDB:', err));
 
 const userSchema = new mongoose.Schema({
-  email: { type: String, required: true, unique: true, validate: { validator: (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/g.test(v), message: 'Please enter a valid email address' } },
+  email: { type: String, required: true},
   password: { type: String, required: true },
 });
 
@@ -47,7 +47,7 @@ app.post('/login', (req, res) => {
     const   usuario = await User.findOne({email})
     if (usuario) {
       return res.status(400).json({message: " El usaurio ya existe"})
-    }
+      }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
