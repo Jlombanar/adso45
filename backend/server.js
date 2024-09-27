@@ -44,6 +44,11 @@ app.post('/login', (req, res) => {
   const { email, password } = req.body;
 
   try {
+    const   usuario = await User.findOne({email})
+    if (usuario) {
+      return res.status(400).json({message: " El usaurio ya existe"})
+    }
+
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = new User({ email, password: hashedPassword });
