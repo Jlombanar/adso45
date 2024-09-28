@@ -16,12 +16,12 @@ mongoose.connect(MONGO_URL)
   .then(() => console.log('Conectado a MongoDB'))
   .catch(err => console.error('Error al conectar a MongoDB:', err));
 
-const userSchema = new mongoose.Schema({
+const adminSchema = new mongoose.Schema({
   email: { type: String, required: true},
   password: { type: String, required: true },
 });
 
-const User = mongoose.model('User', userSchema);
+const Admin = mongoose.model('admin', adminSchema) // apunta a a coleccion admin 
 
 //4 - rutas Login 
 app.post('/login', (req, res) => {
@@ -44,16 +44,16 @@ app.post('/login', (req, res) => {
   const { email, password } = req.body;
 
   try {
-    const   usuario = await User.findOne({email})
+    const   usuario = await Admin.findOne({email})
     if (usuario) {
       return res.status(400).json({message: " El usaurio ya existe"})
       }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const user = new User({ email, password: hashedPassword });
+    const newAdmin = new Admin({ email, password: hashedPassword })
 
-    const savedUser = await user.save(); 
+    const savedAdmin = await newAdmin.save(); 
 
     res.status(201).json({ message: 'Usuario registrado correctamente' });
   } catch (err) {
