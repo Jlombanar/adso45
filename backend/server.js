@@ -21,7 +21,7 @@ const userSchema = new mongoose.Schema({
   password: { type: String, required: true },
 });
 
-const Admin = mongoose.model('Admin', adminSchema);
+const User = mongoose.model('User', userSchema);
 
 //4 - rutas Login 
 app.post('/login', (req, res) => {
