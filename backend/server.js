@@ -28,6 +28,9 @@ app.post('/login', async (req, res) => {
   const { email, password } = req.body;
 
   try {
+    console.log("Email recibido:", email);
+    console.log("Contraseña recibida:", password);
+    
     // Buscar al usuario en la base de datos
     const usuario = await Admin.findOne({ email });
     
