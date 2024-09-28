@@ -21,7 +21,7 @@ const adminSchema = new mongoose.Schema({
   password: { type: String, required: true },
 });
 
-const Admin = mongoose.model('admin', adminSchema) // apunta a a coleccion admin 
+const Admin = mongoose.model('Admin', adminSchema, 'admin') // apunta a a coleccion admin 
 
 //4 - rutas Login 
 app.post('/login', (req, res) => {
