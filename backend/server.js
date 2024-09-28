@@ -4,7 +4,7 @@ const cors = require("cors");
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
-//2 - configuracion
+//  configuracion
 const app = express();
 app.use(express.json());
 app.use(cors());
@@ -39,7 +39,7 @@ app.post('/login', (req, res) => {
     });
   });
 
- // ruta de register
+ // ruta de register mongo
  app.post('/register', async (req, res) => {
   const { email, password } = req.body;
 
