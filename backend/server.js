@@ -24,20 +24,33 @@ const adminSchema = new mongoose.Schema({
 const Admin = mongoose.model('Admin', adminSchema, 'admin') // apunta a a coleccion admin 
 
 //4 - rutas Login 
-app.post('/login', (req, res) => {
-    const db = "SELECT * FROM administradores WHERE email = ? AND password = ?";
-    conexion.query(db, [req.body.email, req.body.password], (err, data) => {
-      if (err) return res.status(50).json({ success: false, message: "Error en el inicio de sesión" });
-      
-        
-  
-      if (data.length > 0) {
-        return res.status(200).json({ success: true, message: "BIENVENIDO A LA PLATAFORMA" });
-      } else {
-        return res.status(401).json({ success: false, message: "Usuario o contraseña incorrectos" });
-      }
-    });
-  });
+app.post('/login', async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    // Buscar al usuario en la base de datos
+    const usuario = await Admin.findOne({ email });
+    
+    if (!usuario) {
+      // Si no existe el usuario, respondemos con un mensaje de error
+      return res.status(401).json({ message: "Credenciales incorrectas" });
+    }
+
+    // Comparar la contraseña ingresada con la contraseña almacenada en la base de datos
+    const isMatch = await bcrypt.compare(password, usuario.password);
+
+    if (!isMatch) {
+      // Si la contraseña no coincide
+      return res.status(401).json({ message: "Credenciales incorrectas" });
+    }
+
+    // Si las credenciales son correctas
+    res.status(200).json({ message: "Inicio de sesión exitoso", usuario });
+  } catch (err) {
+    console.error('Error en el proceso de login:', err);
+    res.status(500).json({ message: 'Error interno del servidor' });
+  }
+});
 
  // ruta de register mongo
  app.post('/register', async (req, res) => {
