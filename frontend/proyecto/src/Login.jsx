@@ -38,7 +38,7 @@ export function Login() {
                     <input type="password" placeholder="contraseña" onChange ={e => setPassword(e.target.value)} required/>
                 </div>
                 <button>INGRESAR</button>
-                <p> Si no tienes cuenta  <a href="/Register">Ingressa Aqui</a></p>
+                <p> Si no tienes cuenta  <Link to="/Register">Ingressa Aqui</Link></p>
             </form>
             
         </main>
