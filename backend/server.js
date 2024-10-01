@@ -1,52 +1,58 @@
 //1 - importamos modulo con require
 const express = require("express");
-const mongoose= require("mongoose");
-const bcryp = require ("bcrypt")
+const mongoose = require("mongoose");
+const bcrypt = require ("bcrypt")
 const cors = require("cors");
+
 
 //2 - configuracion
 const app = express();
 app.use(express.json());
 app.use(cors());
 
-//3 - conexion mongo  atlas
-const MONGO_URL = "mongodb+srv://jalmpa77:ADSOVIRTUAL@virtual.ui3qi.mongodb.net/datos?retryWrites=true&w=majority&appName=VIRTUAL"
+//  conexion a mongo atlas
+
+const MONGO_URL="mongodb+srv://jalmpa77:ADSOFINAL@ficha45.ogo5r.mongodb.net/datos?retryWrites=true&w=majority&appName=ficha45"
 mongoose.connect(MONGO_URL)
 .then(() => console.log("conectado a mongo"))
 .catch((err) => console.log(err))
 
-//4 - definir modelos
-const datosShema= new mongoose.Schema({
-  email: { type:String,required: true},
-  password: { type:String,required: true}
-  
-});
-const Datos = mongoose.model ('Datos',datosShema,'Usuarios')
+//3 - definimos modelos
+
+const datosshema = new mongoose.Schema({
+  email: { type:String,requerid:true},
+  password:{type: String, requerid:true}
+
+})
+const datos = mongoose.model("Datos", datosshema,'Usuarios');
 
 
- // ruta de register
- app.post('/register',async (req,res)=>{
-  const {email,password}= req.body;
 
-  // vamos a consultar si el correo  existe 
+// ruta del login
+
+
+
+//ruta de registar
+
+app.post('/register',async (req,res) =>{
+  const {email,password} = req.body;
 
   try {
-    const usuarioexiste =await Datos.findOne ({email})
-    if (usuarioexiste) {
-      return res.status(400).json({message: "el correo ya existe"})
+    const usuarioexiste=await datos.findOne ({email})
+    if(usuarioexiste){
+      return res.status(400).json({message: "usuario ya existe"})
       }
-      // si no existe el correo, vamos a crear un nuevo usuario
-      const hashPassword = await bcryp.hash(password, 10);
-      const newUsuario =new Datos ({email, password: hashPassword})
-      const saveUsuarios= await newUsuario.save();
-      res.status(201).json ({message:'usuario registrado correctamente'})
-      
+      // creo el usuario nuevo
+      const hashPassword = await bcrypt.hash(password, 10);
+      const newUsuario= new datos ({email, password: hashPassword})
+      const saveUsuarios = await newUsuario.save()
+      res.status(201).json ({message:'Usuario Registrado Correctamente'})
   } catch (error) {
-    console.error ('error al registar el usuario', error)
+    console.error('error al registrar el usuario',error)
+    
   }
+}
 
-  
- }
 )
 
 
