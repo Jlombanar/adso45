@@ -24,34 +24,34 @@ const adminSchema = new mongoose.Schema({
 const Admin = mongoose.model('Admin', adminSchema, 'admin') // apunta a a coleccion admin 
 
 //4 - rutas Login 
+
 app.post('/login', async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    console.log("Email recibido:", email);
-    console.log("Contraseña recibida:", password);
-    
-    // Buscar al usuario en la base de datos
+    // 1. buscamos el correo 
     const usuario = await Admin.findOne({ email });
-    
     if (!usuario) {
-      // Si no existe el usuario, respondemos con un mensaje de error
-      return res.status(401).json({ message: "Credenciales incorrectas" });
+      return res.status(401).json({ message: 'Invalid email or password' });
     }
 
-    // Comparar la contraseña ingresada con la contraseña almacenada en la base de datos
-    const isMatch = await bcrypt.compare(password, usuario.password);
-
-    if (!isMatch) {
-      // Si la contraseña no coincide
-      return res.status(401).json({ message: "Credenciales incorrectas" });
-    }
-
-    // Si las credenciales son correctas
-    res.status(200).json({ message: "Inicio de sesión exitoso", usuario });
-  } catch (err) {
-    console.error('Error en el proceso de login:', err);
-    res.status(500).json({ message: 'Error interno del servidor' });
+    // 2. Comparo la contrasena 
+    bcrypt.compare(password, usuario.password, (err, validPassword) => {
+      console.log('Error:', err);
+      console.log('Valid Password:', validPassword);
+      if (err) {
+        return res.status(500).json({ message: 'Internal Server Error' });
+      }
+      if (validPassword) {
+        return res.json({ message: 'BIENVENIDO A LA PLATAFORMA' });
+      } else {
+        return res.status(401).json({ message: 'Invalid email or password' });
+      }
+    });
+  
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal Server Error' });
   }
 });
 
