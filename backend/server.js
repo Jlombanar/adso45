@@ -80,10 +80,50 @@ app.post('/login', async (req, res) => {
       return res.status(400).json({ message: err.message });
     }
     res.status(500).json({ message: 'Error interno del servidor' });
+    
   }});
 
 
-   
+ //   olvido de contrase
+
+  app.post('/forgot-password', async (req, res) => {
+    const { email } = req.body;
+    try {
+      
+      const usuario = await Admin.findOne({ email: email });
+      if (!usuario) {
+        return res.status(404).send('Usuario no encontrado');
+      }
+  
+      // Generate a unique reset code
+      const resetCode = Math.random().toString(36).substring(2, 15);
+      usuario.resetCode = resetCode;
+  
+      // Save the updated user in the database
+      await Admin.save();
+  
+      // Send the email with the reset link
+      const mailOptions = {
+        from: 'tuCorreo@gmail.com',
+        to: email,
+        subject: 'Recuperación de contraseña',
+        text: `Para restablecer tu contraseña, haz clic en el siguiente enlace: http://localhost:3000/reset-password/${resetCode}`
+      };
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+          console.log('Error al enviar el correo:', error);
+          return res.status(500).send('Error al enviar el correo');
+        }
+        res.send('Correo de restablecimiento de contraseña enviado a tu correo electrónico');
+      });
+    } catch (error) {
+      console.log('Error en el servidor:', error);
+      return res.status(500).send('Error en el servidor');
+    }
+  });
+
+
+
 
 //5 - poner a escuchar al servidor
 app.listen(8081,()=>{
