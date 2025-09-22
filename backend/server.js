@@ -9,7 +9,10 @@ require('dotenv').config();
 //2 - configuracion
 const app = express();
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: 'https://adso84.devsoluciones.com' // reemplaza con la URL de tu frontend
+}));
+
 
 // conexión a Mongo Atlas con variable de entorno
 const MONGO_URL = process.env.MONGO_URL;
@@ -25,8 +28,8 @@ mongoose.connect(MONGO_URL, {
 //3 - definimos modelos
 
 const datosshema = new mongoose.Schema({
-  email: { type:String,requerid:true},
-  password:{type: String, requerid:true}
+  email: { type:String,required:true},
+  password:{type: String, required:true}
 
 })
 const datos = mongoose.model("Datos", datosshema,'Usuarios');
