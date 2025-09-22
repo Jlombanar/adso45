@@ -89,11 +89,11 @@ app.post('/register',async (req,res) =>{
 
 
 
-//5 - poner a escuchar al servidor
-app.listen(8081,()=>{
-  console.log("servidor escuchando...");
-})
-    
+// 5 - Escuchar en Render
+const PORT = process.env.PORT || 8081;
+app.listen(PORT, () => {
+  console.log(`🚀 Servidor escuchando en el puerto ${PORT}`);
+});  
     
     
   
