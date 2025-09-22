@@ -10,12 +10,16 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-//  conexion a mongo atlas
+// conexión a Mongo Atlas con variable de entorno
+const MONGO_URL = process.env.MONGO_URL;
 
-const MONGO_URL="mongodb+srv://jalmpa77:ADSOFINAL@ficha45.ogo5r.mongodb.net/datos?retryWrites=true&w=majority&appName=ficha45"
-mongoose.connect(MONGO_URL)
-.then(() => console.log("conectado a mongo"))
-.catch((err) => console.log(err))
+mongoose.connect(MONGO_URL, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+})
+.then(() => console.log("✅ Conectado a MongoDB Atlas"))
+.catch((err) => console.error("❌ Error al conectar a MongoDB:", err));
+
 
 //3 - definimos modelos
 
