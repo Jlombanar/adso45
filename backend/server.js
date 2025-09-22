@@ -26,9 +26,37 @@ const datosshema = new mongoose.Schema({
 })
 const datos = mongoose.model("Datos", datosshema,'Usuarios');
 
+// ruta de Login 
+app.post('/login', async (req, res) => {
+  const { email, password } = req.body;
 
+  try {
+    // 1. buscamos el correo 
+    const usuario = await datos.findOne({ email });
+    if (!usuario) {
+      return res.status(401).json({ message: 'Correo electrónico o contraseña no válidos' });
+    }
 
-// ruta del login
+    // 2. Comparo la contrasena 
+    bcrypt.compare(password, usuario.password, (err, validPassword) => {
+      console.log('Error:', err);
+      console.log('Valid Password:', validPassword);
+      if (err) {
+        return res.status(500).json({ message: 'Error del servidor ' });
+      }
+      if (validPassword) {
+        return res.json({ message: 'BIENVENIDO A LA PLATAFORMA' });
+      } else {
+        return res.status(401).json({ message: 'Correo electrónico o contraseña incorrectos' });
+      }
+    });
+  
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'error del servidor ' });
+  }
+});
+
 
 
 

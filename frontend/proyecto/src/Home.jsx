@@ -10,7 +10,7 @@ function Home() {
       <div className="hero">
         <h1>Bienvenidos a Turiscarribean</h1>
         <p>Bienvenido a Turiscarribean, tu puerta de entrada a las maravillas del Caribe. Fundada con la misión de brindar experiencias únicas y memorables, Turiscarribean se dedica a ofrecer una gama completa de servicios turísticos que incluyen tours personalizados, alojamiento de calidad y actividades emocionantes para todo tipo de viajeros.</p>
-        <a href="#about" className="cta">Descubre más</a>
+        <a href="https://colombia.travel/es" className="cta">Descubre más</a>
       </div>
 
       <section id="destinos">

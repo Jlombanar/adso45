@@ -25,12 +25,14 @@
   display: flex;
   margin: 0;
   padding: 0;
-  flex-grow: 1; /* Ocupa el máximo espacio disponible */
+  flex-grow: 1; 
+  
   
 }
 
 .Navbar ul li {
   margin: 0 15px;
+  float: right;
 }
 
 .Navbar ul li a {
