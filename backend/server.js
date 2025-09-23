@@ -91,6 +91,32 @@ app.post('/register',async (req,res) =>{
 
 )
 
+app.get('/status', async (req, res) => {
+  try {
+    let usuarios = 0;
+    if (mongoose.connection.readyState === 1) {
+      usuarios = await datos.countDocuments();
+    }
+
+    const estadoMongo = mongoose.connection.readyState === 1
+      ? '🟢 Conectado'
+      : '🔴 No conectado';
+
+    res.json({
+      estado_servidor: '🟢 Activo',
+      estado_mongo: estadoMongo,
+      usuarios_registrados: usuarios,
+      hora_local: new Date().toLocaleString('es-CO', { timeZone: 'America/Bogota' }),
+      entorno: process.env.NODE_ENV || 'desconocido'
+    });
+  } catch (error) {
+    res.status(500).json({
+      estado_servidor: '🔴 Error',
+      mensaje: 'No se pudo obtener el estado del servidor',
+      error: error.message
+    });
+  }
+});
 
 
 // 5 - Escuchar en Render
