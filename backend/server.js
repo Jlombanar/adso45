@@ -17,12 +17,10 @@ app.use(cors({
 // conexión a Mongo Atlas con variable de entorno
 const MONGO_URL = process.env.MONGO_URL;
 
-mongoose.connect(MONGO_URL, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-})
-.then(() => console.log("✅ Conectado a MongoDB Atlas"))
-.catch((err) => console.error("❌ Error al conectar a MongoDB:", err));
+mongoose.connect(MONGO_URL)
+  .then(() => console.log("✅ Conectado a MongoDB Atlas"))
+  .catch((err) => console.error("❌ Error al conectar a MongoDB:", err));
+
 
 
 //3 - definimos modelos
@@ -66,56 +64,32 @@ app.post('/login', async (req, res) => {
 });
 
 
-
-
-//ruta de registar
-
-app.post('/register',async (req,res) =>{
-  const {email,password} = req.body;
+//ruta de registrar
+app.post('/register', async (req, res) => {
+  const { email, password } = req.body;
 
   try {
-    const usuarioexiste=await datos.findOne ({email})
-    if(usuarioexiste){
-      return res.status(400).json({message: "usuario ya existe"})
-      }
-      // creo el usuario nuevo
-      const hashPassword = await bcrypt.hash(password, 10);
-      const newUsuario= new datos ({email, password: hashPassword})
-      const saveUsuarios = await newUsuario.save()
-      res.status(201).json ({message:'Usuario Registrado Correctamente'})
-  } catch (error) {
-    console.error('error al registrar el usuario',error)
-    
-  }
-}
-
-)
-
-app.get('/status', async (req, res) => {
-  try {
-    let usuarios = 0;
-    let estadoMongo = '🔴 No conectado';
-
-    if (mongoose.connection.readyState === 1) {
-      estadoMongo = '🟢 Conectado';
-      usuarios = await datos.countDocuments();
+    const usuarioexiste = await datos.findOne({ email });
+    if (usuarioexiste) {
+      return res.status(400).json({ message: "Usuario ya existe" });
     }
 
-    res.json({
-      estado_servidor: '🟢 Activo',
-      estado_mongo: estadoMongo,
-      usuarios_registrados: usuarios,
-      hora_local: new Date().toLocaleString('es-CO', { timeZone: 'America/Bogota' }),
-      entorno: process.env.NODE_ENV || 'desconocido'
-    });
+    // creo el usuario nuevo
+    const hashPassword = await bcrypt.hash(password, 10);
+    const newUsuario = new datos({ email, password: hashPassword });
+    await newUsuario.save();
+
+    res.status(201).json({ message: 'Usuario Registrado Correctamente' });
+
   } catch (error) {
-    res.status(500).json({
-      estado_servidor: '🔴 Error',
-      mensaje: 'No se pudo obtener el estado del servidor',
-      error: error.message
-    });
+    console.error('❌ Error al registrar el usuario:', error);
+    // 👇 agregamos respuesta
+    res.status(500).json({ message: 'Error al registrar el usuario' });
   }
 });
+
+
+
 
 
 // 5 - Escuchar en Render
