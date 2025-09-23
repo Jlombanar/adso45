@@ -94,13 +94,12 @@ app.post('/register',async (req,res) =>{
 app.get('/status', async (req, res) => {
   try {
     let usuarios = 0;
+    let estadoMongo = '🔴 No conectado';
+
     if (mongoose.connection.readyState === 1) {
+      estadoMongo = '🟢 Conectado';
       usuarios = await datos.countDocuments();
     }
-
-    const estadoMongo = mongoose.connection.readyState === 1
-      ? '🟢 Conectado'
-      : '🔴 No conectado';
 
     res.json({
       estado_servidor: '🟢 Activo',
