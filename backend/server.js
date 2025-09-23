@@ -12,7 +12,9 @@ app.use(express.json());
 app.use(cors({
   origin: 'https://adso84.devsoluciones.com' // reemplaza con la URL de tu frontend
 }));
-
+app.get('/', (req, res) => {
+  res.send('Servidor activo 🚀');
+});
 
 // conexión a Mongo Atlas con variable de entorno
 const MONGO_URL = process.env.MONGO_URL;
